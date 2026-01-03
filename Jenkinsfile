@@ -1,27 +1,31 @@
 pipeline {
     agent any
-    
     tools {
-        jdk 'jdk17'
+        jdk 'jdk-17'
         maven 'maven3'
     }
-    
-    stages {   
-        stage('Compile') {
+
+    stages {
+        stage('Git checkout') {
             steps {
-            sh 'mvn compile'
+                sh '''
+                git branch:'main',credentialsId:'github',url:'https://github.com/mukeshjava92/Boardgame.git'
+                '''
             }
         }
-        
+        stage('Compile the Source code') {
+            steps {
+                sh " mvn compile"
+            }
+        }
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh " mvn test"
             }
         }
-        
-        stage('Build') {
+         stage('File System Scan') {
             steps {
-                sh 'mvn package'
+                sh "trivy fs --format table -o trivy-output.html ."
             }
         }
     }
