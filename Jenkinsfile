@@ -3,35 +3,47 @@ pipeline {
     tools {
         jdk 'jdk-17'
         maven 'maven3'
+    } 
+    environment {
+       SONAR_HOME= tool 'SonarQube'
     }
 
     stages {
-        stage('Git checkout') {
+        stage('Clean Workspace') { 
+            steps { 
+                cleanWs()
+                 }
+        }
+        stage('Source code checkout') {
             steps {
-                sh '''
-                git branch:'main',credentialsId:'git-hub',url:'https://github.com/mukeshjava92/Boardgame.git'
-                '''
+                git branch:'main',credentialsId:'docker-cred',url:'https://github.com/mukeshjava92/Boardgame.git'
             }
         }
-        stage('Compile the Source code') {
+        stage('Unit Test') {
             steps {
-                sh " mvn compile"
+                sh 'mvn test'
             }
         }
-        stage('Test') {
+        stage('File System scan') {
             steps {
-                sh " mvn test"
+                sh " trivy fs --format table -o FS-trivy.html ."
             }
         }
-         stage('File System Scan') {
+        stage('SonarQube Quality analysis') {
             steps {
-                sh "trivy fs --format table -o trivy-output.html ."
+               withSonarQubeEnv('SonarQube'){
+                   sh ''' $SONAR_HOME/bin/sonar-scanner -Dsonar.url=http://43.204.147.188:9000/ -Dsonar.projectName=Boardgame -Dsonar.projectKey=Boardgame -Dsonar.java.binaries=.
+                   '''
+               }
             }
         }
-         stage('Application Artifact Build') {
+        stage('Sonar Quatity Gate') {
             steps {
-                sh "mvn package -DskipTests"
+                script {
+                waitForQualityGate abortPipeline: true, credentialsId: 'sonarqube'
             }
+          }
         }
+        
     }
 }
