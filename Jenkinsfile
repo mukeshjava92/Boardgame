@@ -64,7 +64,7 @@ pipeline {
         }   
        stage('Deploy'){
             steps {
-                sh "docker run -dt --name boardgame -p 8080:8081 ${DOCKER_REPO}:${env.BUILD_ID}"
+                sh "docker run -dt --name boardgame -p 8081:8080 ${DOCKER_REPO}:${env.BUILD_ID}"
             }
         }      
     }
