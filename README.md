@@ -2,7 +2,7 @@
 
 This document provides step-by-step instructions for installing Jenkins on Ubuntu, setting up SonarQube using Docker, and adding Trivy installation via the official apt repository.
 
-**1. Jenkins Installation on Ubuntu**
+**Jenkins Installation on Ubuntu**
 
 **Prerequisites**
 
@@ -10,56 +10,57 @@ This document provides step-by-step instructions for installing Jenkins on Ubunt
 
 * Sudo privileges
 
-Steps
+**Steps**
 
-Update system packages
+1. Update system packages
 
-sudo apt update && sudo apt upgrade -y
+# sudo apt update && sudo apt upgrade -y
 
-Install Java (required for Jenkins)
+2. Install Java (required for Jenkins)
 
-sudo apt install openjdk-11-jdk -y
-java -version
+# sudo apt install openjdk-11-jdk -y
+# java -version
 
-Add Jenkins repository and key
+3. Add Jenkins repository and key
 
-wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
-sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+# wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+# sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 
-Install Jenkins
+4. Install Jenkins
 
-sudo apt update
-sudo apt install jenkins -y
+# sudo apt update
+# sudo apt install jenkins -y
 
-Start and enable Jenkins service
+5. Start and enable Jenkins service
 
-sudo systemctl start jenkins
-sudo systemctl enable jenkins
-sudo systemctl status jenkins
+# sudo systemctl start jenkins
+# sudo systemctl enable jenkins
+# sudo systemctl status jenkins
 
-Open firewall port 8080
+6. Open firewall port 8080
 
-sudo ufw allow 8080
+# sudo ufw allow 8080
 
-Access Jenkins Web UI
+**Access Jenkins Web UI**
 
-URL: http://<Jenkins-Public-IP>:8080
+URL: **http://<Jenkins-Public-IP>:8080**
 
 Retrieve initial admin password:
 
-sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+sudo cat /var/lib/jenkins/secrets/**initialAdminPassword**
 
-Reference
+**Reference**
 
 Jenkins Official Installation Guide
+----------------------------------------------------------------------------------------------------------------------------------------------------
 
-2. Install Trivy via Official apt Repository
+ **Install Trivy via Official apt Repository**
 
-Steps
+**Steps**
 
-Install prerequisites
+**Install prerequisites:**
 
-sudo apt install wget apt-transport-https gnupg lsb-release -y
+# sudo apt install wget apt-transport-https gnupg lsb-release -y
 
 Add Trivy GPG key and repository
 
