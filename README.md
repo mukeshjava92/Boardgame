@@ -139,13 +139,14 @@ Password: admin
 ----------------------------------------------------------------------------------------------------------------------------------------------
 # End to End Jenkins Pipeline setup 
 
-**Tools**:
-Marven: marven3
-JDK: jdk-17
-docker: latest
-SonarQube: 7.3.0
+I am using below tools for this project:
+**Tools**
+* Marven: marven3
+* JDK: jdk-17
+* Docker: latest
+* SonarQube: 7.3.0
 
-Below are the tools setup in Jenkins:
+
 <img width="574" height="325" alt="image" src="https://github.com/user-attachments/assets/b02ffa5f-c4f2-42f4-a6f7-bd7e342b995b" />
 
 
