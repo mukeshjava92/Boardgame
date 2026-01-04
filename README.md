@@ -119,7 +119,7 @@ URL: http://<Sonar-Public-IP>:9000
 
 Username: admin
 
-Password: admin**
+Password: admin
 
 **(Optional) Run with PostgreSQL for production:**
     
