@@ -1,8 +1,8 @@
-# **Jenkins and SonarQube End-to-End Setup Guide **
+# Jenkins and SonarQube End-to-End Setup Guide 
 
 This document provides step-by-step instructions for installing Jenkins on Ubuntu, setting up SonarQube using Docker, and adding Trivy installation via the official apt repository.
 
-# **Jenkins Installation on Ubuntu**
+# Jenkins Installation on Ubuntu
 
 **Prerequisites**
 
@@ -23,27 +23,28 @@ This document provides step-by-step instructions for installing Jenkins on Ubunt
 
 3. Add Jenkins repository and key
 
-    wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
-    sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+    sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc   https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]"   https://pkg.jenkins.io/debian-stable binary/ | sudo tee   /etc/apt/sources.list.d/jenkins.list > /dev/null
 
-4. Install Jenkins
+
+5. Install Jenkins
 
     sudo apt update
     sudo apt install jenkins -y
 
-5. Start and enable Jenkins service
+6. Start and enable Jenkins service
 
    sudo systemctl start jenkins
    sudo systemctl enable jenkins
    sudo systemctl status jenkins
 
-6. Open firewall port 8080
+7. Open firewall port 8080
 
     sudo ufw allow 8080
 
 **Access Jenkins Web UI**
 
-URL: **http://<Jenkins-Public-IP>:8080**
+URL: http://Jenkins-Public-IP:8080
 
 Retrieve initial admin password:
 
@@ -51,11 +52,11 @@ Retrieve initial admin password:
 
 
 **Reference**
+https://www.jenkins.io/doc/book/installing/linux/
 
-Jenkins Official Installation Guide
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
- # **Install Trivy via Official apt Repository**
+ # Install Trivy via Official apt Repository
 
 **Steps**
 
@@ -79,7 +80,7 @@ Jenkins Official Installation Guide
 
 **Reference**
 
-Trivy Official Installation Guide
+https://trivy.dev/docs/latest/getting-started/installation/
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -134,7 +135,6 @@ Password: admin**
     --link postgres \
     sonarqube:lts
 
-**Reference**
 
 SonarQube Docker Hub
 
