@@ -24,6 +24,7 @@ This document provides step-by-step instructions for installing Jenkins on Ubunt
 3. Add Jenkins repository and key
 
     sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc   https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+   
     echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]"   https://pkg.jenkins.io/debian-stable binary/ | sudo tee   /etc/apt/sources.list.d/jenkins.list > /dev/null
 
 
@@ -67,14 +68,15 @@ https://www.jenkins.io/doc/book/installing/linux/
 2. Add Trivy GPG key and repository
 
    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+   
    echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
 
-3. Update and install Trivy
+4. Update and install Trivy
 
    sudo apt update
    sudo apt install trivy -y
 
-4. Verify installation
+5. Verify installation
 
    trivy --version
 
@@ -85,7 +87,7 @@ https://trivy.dev/docs/latest/getting-started/installation/
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
  
- # **SonarQube Setup in Docker**
+ # SonarQube Setup in Docker
 
 **Prerequisites**
 
@@ -104,10 +106,10 @@ https://trivy.dev/docs/latest/getting-started/installation/
 
 2. Start the SonarQube application in Sonar container 
 
-  docker run -d --name sonarqube \
-    -p 9000:9000 \
-    --restart unless-stopped \
-    sonarqube:lts
+      docker run -d --name sonarqube \
+        -p 9000:9000 \
+        --restart unless-stopped \
+        sonarqube:lts
 
 **Access SonarQube Web UI**
 
@@ -120,20 +122,20 @@ Username: admin
 Password: admin**
 
 **(Optional) Run with PostgreSQL for production:**
+    
+      docker run -d --name postgres \
+        -e POSTGRES_USER=sonar \
+        -e POSTGRES_PASSWORD=sonar \
+        -e POSTGRES_DB=sonar \
+        postgres:13
 
-  docker run -d --name postgres \
-    -e POSTGRES_USER=sonar \
-    -e POSTGRES_PASSWORD=sonar \
-    -e POSTGRES_DB=sonar \
-    postgres:13
-
-  docker run -d --name sonarqube \
-    -p 9000:9000 \
-    -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar \
-    -e SONARQUBE_JDBC_USERNAME=sonar \
-    -e SONARQUBE_JDBC_PASSWORD=sonar \
-    --link postgres \
-    sonarqube:lts
+      docker run -d --name sonarqube \
+        -p 9000:9000 \
+        -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar \
+        -e SONARQUBE_JDBC_USERNAME=sonar \
+        -e SONARQUBE_JDBC_PASSWORD=sonar \
+        --link postgres \
+        sonarqube:lts
 
 
 SonarQube Docker Hub
