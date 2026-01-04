@@ -6,6 +6,7 @@ pipeline {
     } 
     environment {
        SONAR_HOME= tool 'SonarQube'
+       DOCKER_REPO= 'mukeshjava92/boardgame'
     }
 
     stages {
@@ -44,6 +45,27 @@ pipeline {
             }
           }
         }
-        
+        stage('Build') {
+            steps {
+                sh "mvn clean package"
+            }
+        }  
+        stage('Docker Image Build'){
+            steps {
+                sh "docker build -t ${env.DOCKER_REPO}:${env.BUILD_ID} ."
+            }
+        }   
+        stage('Image push to docker registry') {
+            steps {
+                withDockerRegistry([credentialsId: 'docker-cred', url: 'https://index.docker.io/v1/']) {
+                  sh "docker push ${env.DOCKER_REPO}:${env.BUILD_ID}"
+               }
+            }
+        }   
+       stage('Deploy'){
+            steps {
+                sh "docker run -dt --name boardgame -p 8080:8081 ${DOCKER_REPO}:${env.BUILD_ID}"
+            }
+        }      
     }
 }
