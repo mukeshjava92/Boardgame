@@ -1,6 +1,17 @@
-# Jenkins and SonarQube End-to-End Setup Guide 
+# DEVOPS Jenkins CICD project
+
+This project automates code build, test, security scan, and container deployment using Jenkins, Maven, SonarQube, Trivy, and Docker for a streamlined CI/CD workflow.
+
+<img width="903" height="211" alt="image" src="https://github.com/user-attachments/assets/5010e83b-0686-448e-a732-0b8ed28cccdd" />
+
+
 
 <img width="940" height="95" alt="image" src="https://github.com/user-attachments/assets/eb940a02-949f-4da7-b583-748af4c73ecf" />
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Jenkins and SonarQube End-to-End Setup Guide 
 
 # Jenkins Installation on Ubuntu
 
@@ -170,6 +181,22 @@ I1. nstall below plugins to jenkins.
 4. Configure SonarQube Server in Jenkins. **Manage Jenkins → Configure System → SonarQube servers**
    
 
-<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/5a21bd47-f6af-4c93-a397-8f5a454df987" />
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/55a276fc-e873-4e26-bc79-d86b936bfc97" />
+
+ **Create Jenkin Pipeline Project with Source code https://github.com/mukeshjava92/Boardgame.git and run the job**.
+
+ <img width="940" height="298" alt="image" src="https://github.com/user-attachments/assets/ead878a0-8dc8-4453-82f4-3f473e84783f" />
+
+**static code analysis results on SonarQube**
+
+ <img width="940" height="357" alt="image" src="https://github.com/user-attachments/assets/a407c41f-1c48-416b-b004-892d7196437f" />
+ 
+**Application is deployed and accessible**
+
+ <img width="940" height="500" alt="image" src="https://github.com/user-attachments/assets/815765df-bc2f-4b66-9ea6-de4cc83411c4" />
+
+
+
+
 
 
