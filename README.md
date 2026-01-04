@@ -1,6 +1,6 @@
 # Jenkins and SonarQube End-to-End Setup Guide 
 
-This document provides step-by-step instructions for installing Jenkins on Ubuntu, setting up SonarQube using Docker, and adding Trivy installation via the official apt repository.
+<img width="940" height="95" alt="image" src="https://github.com/user-attachments/assets/eb940a02-949f-4da7-b583-748af4c73ecf" />
 
 # Jenkins Installation on Ubuntu
 
@@ -87,7 +87,7 @@ https://trivy.dev/docs/latest/getting-started/installation/
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
  
- # SonarQube Setup in Docker
+ # SonarQube Server Setup
 
 **Prerequisites**
 
@@ -113,7 +113,7 @@ https://trivy.dev/docs/latest/getting-started/installation/
 
 **Access SonarQube Web UI**
 
-URL: http://<Sonar-Public-IP>:9000
+URL: http://Sonar-Public-IP:9000
 
 **Default credentials:**
 
@@ -137,20 +137,39 @@ Password: admin
         --link postgres \
         sonarqube:lts
 ----------------------------------------------------------------------------------------------------------------------------------------------
-# End to End Jenkins Pipeline setup 
+# End to End Jenkins CICD Pipeline setup 
 
-I am using below tools for this project:
+**Prequisites: **
+I1. nstall below plugins to jenkins.
+
+**Plugins:**
+* Eclipse Temurin Installer → to provision JDKs like Java 17
+* Pipeline Maven Integration → to run Maven builds cleanly in pipelines
+* SonarQube Scanner → to run code analysis
+* Sonar Quality Gate → to enforce quality gate checks in Jenkins
+* Docker → to provision Docker agents if needed
+* Docker Pipeline → to build, tag, and push Docker images inside pipelines
+
+2. Configure below Tools to jenkins
 
 **Tools**
-* Marven: marven3
-* JDK: jdk-17
-* Docker: latest
-* SonarQube: 7.3.0
+* Marven(marven3)
+* JDK(jdk-17)
+* Docker(latest)
+* SonarQube(7.3.0)
 
 
 <img width="574" height="325" alt="image" src="https://github.com/user-attachments/assets/b02ffa5f-c4f2-42f4-a6f7-bd7e342b995b" />
 
 
+3. Global Credentials Setup:
+   * docker-cred(Type: Username with password) → Used by withDockerRegistry to log in to Docker Hub
+   * sonarqube(Type: Secret text) → Used by waitForQualityGate and withSonarQubeEnv to authenticate Jenkins with SonarQube.
+   * git-cred(Type: Username with password)  → Used by the git step in your pipeline to clone private repositories.
+
+4. Configure SonarQube Server in Jenkins. **Manage Jenkins → Configure System → SonarQube servers**
+   
+
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/5a21bd47-f6af-4c93-a397-8f5a454df987" />
 
 
-I
