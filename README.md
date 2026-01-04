@@ -1,4 +1,4 @@
-# **####Jenkins and SonarQube End-to-End Setup Guide ####**
+# **Jenkins and SonarQube End-to-End Setup Guide **
 
 This document provides step-by-step instructions for installing Jenkins on Ubuntu, setting up SonarQube using Docker, and adding Trivy installation via the official apt repository.
 
@@ -81,9 +81,8 @@ Jenkins Official Installation Guide
 
 Trivy Official Installation Guide
 
-##################################################################################################################################################################
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
- 
  
  # **SonarQube Setup in Docker**
 
