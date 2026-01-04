@@ -136,6 +136,17 @@ Password: admin
         -e SONARQUBE_JDBC_PASSWORD=sonar \
         --link postgres \
         sonarqube:lts
+----------------------------------------------------------------------------------------------------------------------------------------------
+# End to End Jenkins Pipeline setup 
+
+**Tools**:
+Marven: marven3
+JDK: jdk-17
+docker: latest
+SonarQube: 7.3.0
+
+Below are the tools setup in Jenkins:
+<img width="574" height="325" alt="image" src="https://github.com/user-attachments/assets/b02ffa5f-c4f2-42f4-a6f7-bd7e342b995b" />
 
 
 
