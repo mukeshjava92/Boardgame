@@ -1,8 +1,8 @@
-**####Jenkins and SonarQube End-to-End Setup Guide ####**
+# **####Jenkins and SonarQube End-to-End Setup Guide ####**
 
 This document provides step-by-step instructions for installing Jenkins on Ubuntu, setting up SonarQube using Docker, and adding Trivy installation via the official apt repository.
 
-**Jenkins Installation on Ubuntu**
+# **Jenkins Installation on Ubuntu**
 
 **Prerequisites**
 
@@ -14,32 +14,32 @@ This document provides step-by-step instructions for installing Jenkins on Ubunt
 
 1. Update system packages
 
-# sudo apt update && sudo apt upgrade -y
+    sudo apt update && sudo apt upgrade -y
 
 2. Install Java (required for Jenkins)
 
-# sudo apt install openjdk-11-jdk -y
-# java -version
+    sudo apt install openjdk-11-jdk -y
+    java -version
 
 3. Add Jenkins repository and key
 
-# wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
-# sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+    wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+    sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 
 4. Install Jenkins
 
-# sudo apt update
-# sudo apt install jenkins -y
+    sudo apt update
+    sudo apt install jenkins -y
 
 5. Start and enable Jenkins service
 
-# sudo systemctl start jenkins
-# sudo systemctl enable jenkins
-# sudo systemctl status jenkins
+   sudo systemctl start jenkins
+   sudo systemctl enable jenkins
+   sudo systemctl status jenkins
 
 6. Open firewall port 8080
 
-# sudo ufw allow 8080
+    sudo ufw allow 8080
 
 **Access Jenkins Web UI**
 
@@ -47,119 +47,99 @@ URL: **http://<Jenkins-Public-IP>:8080**
 
 Retrieve initial admin password:
 
-sudo cat /var/lib/jenkins/secrets/**initialAdminPassword**
+   sudo cat /var/lib/jenkins/secrets/**initialAdminPassword**
+
 
 **Reference**
 
 Jenkins Official Installation Guide
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
- **Install Trivy via Official apt Repository**
+ # **Install Trivy via Official apt Repository**
 
 **Steps**
 
-**Install prerequisites:**
+1. Install prerequisites:
 
-# sudo apt install wget apt-transport-https gnupg lsb-release -y
+   sudo apt install wget apt-transport-https gnupg lsb-release -y
 
-Add Trivy GPG key and repository
+2. Add Trivy GPG key and repository
 
-wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+   wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+   echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
 
-Update and install Trivy
+3. Update and install Trivy
 
-sudo apt update
-sudo apt install trivy -y
+   sudo apt update
+   sudo apt install trivy -y
 
-Verify installation
+4. Verify installation
 
-trivy --version
+   trivy --version
 
-Reference
+**Reference**
 
 Trivy Official Installation Guide
 
-3. SonarQube Setup in Docker
+##################################################################################################################################################################
 
-Prerequisites
+ 
+ 
+ # **SonarQube Setup in Docker**
 
-Docker installed on Ubuntu
+**Prerequisites**
 
-At least 2GB RAM available
+* Docker installed on Ubuntu
 
-Steps
+* At least 2GB RAM available
 
-Install Docker
+**Steps**
 
-sudo apt update
-sudo apt install docker.io -y
-sudo systemctl enable docker
-sudo systemctl start docker
+1. Install Docker
 
-Pull SonarQube Docker image
+  sudo apt update
+  sudo apt install docker.io -y
+  sudo systemctl enable docker
+  sudo systemctl start docker
 
-docker pull sonarqube:lts
+2. Start the SonarQube application in Sonar container 
 
-Run SonarQube container
+  docker run -d --name sonarqube \
+    -p 9000:9000 \
+    --restart unless-stopped \
+    sonarqube:lts
 
-docker run -d --name sonarqube \
-  -p 9000:9000 \
-  --restart unless-stopped \
-  sonarqube:lts
-
-Access SonarQube Web UI
+**Access SonarQube Web UI**
 
 URL: http://<Sonar-Public-IP>:9000
 
-Default credentials:
+**Default credentials:
 
 Username: admin
 
-Password: admin
+Password: admin**
 
-(Optional) Run with PostgreSQL for production
+**(Optional) Run with PostgreSQL for production:**
 
-docker run -d --name postgres \
-  -e POSTGRES_USER=sonar \
-  -e POSTGRES_PASSWORD=sonar \
-  -e POSTGRES_DB=sonar \
-  postgres:13
+  docker run -d --name postgres \
+    -e POSTGRES_USER=sonar \
+    -e POSTGRES_PASSWORD=sonar \
+    -e POSTGRES_DB=sonar \
+    postgres:13
 
-docker run -d --name sonarqube \
-  -p 9000:9000 \
-  -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar \
-  -e SONARQUBE_JDBC_USERNAME=sonar \
-  -e SONARQUBE_JDBC_PASSWORD=sonar \
-  --link postgres \
-  sonarqube:lts
+  docker run -d --name sonarqube \
+    -p 9000:9000 \
+    -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar \
+    -e SONARQUBE_JDBC_USERNAME=sonar \
+    -e SONARQUBE_JDBC_PASSWORD=sonar \
+    --link postgres \
+    sonarqube:lts
 
-Reference
+**Reference**
 
 SonarQube Docker Hub
 
 SonarQube Documentation
 
-4. Integrating Jenkins with SonarQube
 
-Install SonarQube Scanner for Jenkins plugin.
-
-Configure SonarQube server in Jenkins (Manage Jenkins → Configure System → SonarQube servers).
-
-Add SonarQube token as Jenkins credential.
-
-Use in pipeline:
-
-withSonarQubeEnv('SonarQube') {
-    sh 'mvn sonar:sonar'
-}
-
-Summary
-
-Jenkins runs on port 8080, SonarQube on port 9000.
-
-Trivy installed via apt for vulnerability scanning.
-
-Use Docker restart policies to ensure SonarQube container starts after reboot.
-
-Always secure Jenkins, SonarQube, and Trivy with proper creden
+I
