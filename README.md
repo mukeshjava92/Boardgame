@@ -1,53 +1,164 @@
-# BoardgameListingWebApp
+**####Jenkins and SonarQube End-to-End Setup Guide ####**
 
-## Description 
+This document provides step-by-step instructions for installing Jenkins on Ubuntu, setting up SonarQube using Docker, and adding Trivy installation via the official apt repository.
 
-**Board Game Database Full-Stack Web Application.**
-This web application displays lists of board games and their reviews. While anyone can view the board game lists and reviews, they are required to log in to add/ edit the board games and their reviews. The 'users' have the authority to add board games to the list and add reviews, and the 'managers' have the authority to edit/ delete the reviews on top of the authorities of users.  
+**1. Jenkins Installation on Ubuntu**
 
-## Technologies
+**Prerequisites**
 
-- Java
-- Spring Boot
-- Amazon Web Services(AWS) EC2
-- Thymeleaf
-- Thymeleaf Fragments
-- HTML5
-- CSS
-- JavaScript
-- Spring MVC
-- JDBC
-- H2 Database Engine (In-memory)
-- JUnit test framework
-- Spring Security
-- Twitter Bootstrap
-- Maven
+* Ubuntu server (20.04 or later recommended)
 
-## Features
+* Sudo privileges
 
-- Full-Stack Application
-- UI components created with Thymeleaf and styled with Twitter Bootstrap
-- Authentication and authorization using Spring Security
-  - Authentication by allowing the users to authenticate with a username and password
-  - Authorization by granting different permissions based on the roles (non-members, users, and managers)
-- Different roles (non-members, users, and managers) with varying levels of permissions
-  - Non-members only can see the boardgame lists and reviews
-  - Users can add board games and write reviews
-  - Managers can edit and delete the reviews
-- Deployed the application on AWS EC2
-- JUnit test framework for unit testing
-- Spring MVC best practices to segregate views, controllers, and database packages
-- JDBC for database connectivity and interaction
-- CRUD (Create, Read, Update, Delete) operations for managing data in the database
-- Schema.sql file to customize the schema and input initial data
-- Thymeleaf Fragments to reduce redundancy of repeating HTML elements (head, footer, navigation)
+Steps
 
-## How to Run
+Update system packages
 
-1. Clone the repository
-2. Open the project in your IDE of choice
-3. Run the application
-4. To use initial user data, use the following credentials.
-  - username: bugs    |     password: bunny (user role)
-  - username: daffy   |     password: duck  (manager role)
-5. You can also sign-up as a new user and customize your role to play with the application! 😊
+sudo apt update && sudo apt upgrade -y
+
+Install Java (required for Jenkins)
+
+sudo apt install openjdk-11-jdk -y
+java -version
+
+Add Jenkins repository and key
+
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+
+Install Jenkins
+
+sudo apt update
+sudo apt install jenkins -y
+
+Start and enable Jenkins service
+
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+sudo systemctl status jenkins
+
+Open firewall port 8080
+
+sudo ufw allow 8080
+
+Access Jenkins Web UI
+
+URL: http://<Jenkins-Public-IP>:8080
+
+Retrieve initial admin password:
+
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+Reference
+
+Jenkins Official Installation Guide
+
+2. Install Trivy via Official apt Repository
+
+Steps
+
+Install prerequisites
+
+sudo apt install wget apt-transport-https gnupg lsb-release -y
+
+Add Trivy GPG key and repository
+
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+
+Update and install Trivy
+
+sudo apt update
+sudo apt install trivy -y
+
+Verify installation
+
+trivy --version
+
+Reference
+
+Trivy Official Installation Guide
+
+3. SonarQube Setup in Docker
+
+Prerequisites
+
+Docker installed on Ubuntu
+
+At least 2GB RAM available
+
+Steps
+
+Install Docker
+
+sudo apt update
+sudo apt install docker.io -y
+sudo systemctl enable docker
+sudo systemctl start docker
+
+Pull SonarQube Docker image
+
+docker pull sonarqube:lts
+
+Run SonarQube container
+
+docker run -d --name sonarqube \
+  -p 9000:9000 \
+  --restart unless-stopped \
+  sonarqube:lts
+
+Access SonarQube Web UI
+
+URL: http://<Sonar-Public-IP>:9000
+
+Default credentials:
+
+Username: admin
+
+Password: admin
+
+(Optional) Run with PostgreSQL for production
+
+docker run -d --name postgres \
+  -e POSTGRES_USER=sonar \
+  -e POSTGRES_PASSWORD=sonar \
+  -e POSTGRES_DB=sonar \
+  postgres:13
+
+docker run -d --name sonarqube \
+  -p 9000:9000 \
+  -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar \
+  -e SONARQUBE_JDBC_USERNAME=sonar \
+  -e SONARQUBE_JDBC_PASSWORD=sonar \
+  --link postgres \
+  sonarqube:lts
+
+Reference
+
+SonarQube Docker Hub
+
+SonarQube Documentation
+
+4. Integrating Jenkins with SonarQube
+
+Install SonarQube Scanner for Jenkins plugin.
+
+Configure SonarQube server in Jenkins (Manage Jenkins → Configure System → SonarQube servers).
+
+Add SonarQube token as Jenkins credential.
+
+Use in pipeline:
+
+withSonarQubeEnv('SonarQube') {
+    sh 'mvn sonar:sonar'
+}
+
+Summary
+
+Jenkins runs on port 8080, SonarQube on port 9000.
+
+Trivy installed via apt for vulnerability scanning.
+
+Use Docker restart policies to ensure SonarQube container starts after reboot.
+
+Always secure Jenkins, SonarQube, and Trivy with proper creden
